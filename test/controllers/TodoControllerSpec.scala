@@ -1,6 +1,6 @@
 package controllers
 
-import adapter.controllers.HomeController
+import adapter.controllers.TodoController
 import org.scalatestplus.play.*
 import org.scalatestplus.play.guice.*
 import play.api.test.*
@@ -12,12 +12,12 @@ import play.api.test.Helpers.*
  *
  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
  */
-class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
+class TodoControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
 
   "HomeController GET" should {
 
     "render the index page from a new instance of controller" in {
-      val controller = new HomeController(stubControllerComponents())
+      val controller = new TodoController(stubControllerComponents())
       val home = controller.index().apply(FakeRequest(GET, "/"))
 
       status(home) mustBe OK
@@ -26,7 +26,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
     }
 
     "render the index page from the application" in {
-      val controller = inject[HomeController]
+      val controller = inject[TodoController]
       val home = controller.index().apply(FakeRequest(GET, "/"))
 
       status(home) mustBe OK

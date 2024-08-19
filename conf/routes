@@ -1,1 +1,1 @@
-GET     /                           adapter.controllers.HomeController.index()
+GET     /todo/$id<[0-9]+>                           adapter.controllers.TodoController.findById(id: Long)
