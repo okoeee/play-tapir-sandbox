@@ -9,3 +9,6 @@ case class JsValueTodo(
 object JsValueTodo:
   import play.api.libs.json.{Json, Writes}
   given Writes[JsValueTodo] = Json.writes[JsValueTodo]
+
+  def apply(todo: domain.model.Todo): JsValueTodo =
+    JsValueTodo(todo.id, todo.title, todo.description, todo.isDone)
