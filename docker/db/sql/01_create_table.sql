@@ -1,5 +1,4 @@
 
-
 USE `play-tapir-sandbox`;
 
 CREATE TABLE `todo`(
