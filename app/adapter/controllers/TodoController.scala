@@ -15,10 +15,10 @@ class TodoController @Inject() (
     todoQueryService:         TodoQueryService
 ) extends BaseController:
 
-  def findById(id: Long): Future[Either[JsValueError, JsValueTodo]] = {
+  def get(id: Long): Future[Either[JsValueError, JsValueTodo]] = {
     Future.successful {
       todoQueryService
-        .findById(id)
+        .get(id)
         .map { todo =>
           JsValueTodo(todo)
         }

@@ -23,5 +23,5 @@ class ApiRouter @Inject() (
   private val playServerOptions = PlayServerOptions.default(materializer, ec)
   private val interpreter = PlayServerInterpreter(playServerOptions)
   private val findTodoRoute = interpreter.toRoutes(
-    todoEndpoints.findBookEndpoint.serverLogic(id => todoController.findById(id))
+    todoEndpoints.findBookEndpoint.serverLogic(id => todoController.get(id))
   )
