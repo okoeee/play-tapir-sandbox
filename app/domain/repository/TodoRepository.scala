@@ -9,4 +9,4 @@ class TodoRepository:
   )
 
   def findAll(): Seq[Todo] = todos
-  def findById(id: Long): Option[Todo] = todos.find(_.id == id)
+  def get(id: Long): Option[Todo] = todos.find(_.id == id)
