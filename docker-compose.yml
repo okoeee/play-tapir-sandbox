@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.1.0
+    platform: linux/amd64
+    container_name: play-tapir-sandbox
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: play-tapir-sandbox
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/sql:/docker-entrypoint-initdb.d
