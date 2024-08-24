@@ -4,7 +4,8 @@ import domain.model.Todo
 import domain.repository.TodoRepository
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
 class TodoQueryService @Inject() (todoRepository: TodoRepository):
-  def findAll(): Seq[Todo] = todoRepository.findAll()
-  def get(id: Long): Option[Todo] = todoRepository.get(id)
+  def findAll(): Future[Seq[Todo]] = todoRepository.findAll()
+  def get(id: Long): Future[Option[Todo]] = todoRepository.get(id)

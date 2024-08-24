@@ -7,21 +7,22 @@ import javax.inject.*
 import play.api.*
 import play.api.mvc.*
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TodoController @Inject() (
     val controllerComponents: ControllerComponents,
     todoQueryService:         TodoQueryService
-) extends BaseController:
+)(implicit ec: ExecutionContext)
+    extends BaseController:
 
-  def get(id: Long): Future[Either[JsValueError, JsValueTodo]] = {
-    Future.successful {
-      todoQueryService
-        .get(id)
+  def get(id: Long): Future[Either[JsValueError, JsValueTodo]] =
+    for {
+      todo <- todoQueryService.get(id)
+    } yield {
+      todo
         .map { todo =>
           JsValueTodo(todo)
         }
         .toRight(JsValueError.notFound("Todo"))
     }
-  }
