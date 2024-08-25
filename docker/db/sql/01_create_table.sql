@@ -1,5 +1,5 @@
 
-USE `play-tapir-sandbox`;
+USE `play_tapir_sandbox`;
 
 CREATE TABLE `todo`(
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

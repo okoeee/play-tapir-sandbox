@@ -2,11 +2,11 @@ package domain.repository
 
 import domain.model.Todo
 
-class TodoRepository:
-  private val todos = Seq(
-    Todo(1, "家事", "家の掃除", true),
-    Todo(2, "買い物", "食料品の買い出し", false)
-  )
+import scala.concurrent.Future
 
-  def findAll(): Seq[Todo] = todos
-  def get(id: Long): Option[Todo] = todos.find(_.id == id)
+trait TodoRepository:
+  def findAll(): Future[Seq[Todo]]
+  def get(id: Long): Future[Option[Todo]]
+  def add(todo: Todo): Future[Int]
+  def update(todo: Todo): Future[Int]
+  def remove(id: Long): Future[Int]
