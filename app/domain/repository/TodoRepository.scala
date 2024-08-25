@@ -7,6 +7,6 @@ import scala.concurrent.Future
 trait TodoRepository:
   def findAll(): Future[Seq[Todo]]
   def get(id: Long): Future[Option[Todo]]
-  def add(todo: Todo): Future[Todo]
-  def update(todo: Todo): Future[Option[Todo]]
-  def remove(id: Long): Future[Option[Todo]]
+  def add(todo: Todo): Future[Int]
+  def update(todo: Todo): Future[Int]
+  def remove(id: Long): Future[Int]

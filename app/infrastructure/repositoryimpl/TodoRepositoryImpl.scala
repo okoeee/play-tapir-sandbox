@@ -30,8 +30,24 @@ class TodoRepositoryImpl @Inject() (
           .headOption
       )
 
-  def add(todo: Todo): Future[Todo] = ???
+  def add(todo: Todo): Future[Int] =
+    db
+      .run(
+        todos += todo
+      )
 
-  def update(todo: Todo): Future[Option[Todo]] = ???
+  def update(todo: Todo): Future[Int] =
+    db
+      .run(
+        todos
+          .filter(_.id === todo.id)
+          .update(todo)
+      )
 
-  def remove(id: Long): Future[Option[Todo]] = ???
+  def remove(id: Long): Future[Int] =
+    db
+      .run(
+        todos
+          .filter(_.id === id)
+          .delete
+      )
