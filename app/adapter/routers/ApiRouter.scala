@@ -10,16 +10,16 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ApiRouter @Inject() (
-    todoEndpoints:    Endpoints
-)(implicit
-    val materializer: Materializer,
-    val ec:           ExecutionContext
+    todoEndpoints: Endpoints
+)(using
+    Materializer,
+    ExecutionContext
 ) extends SimpleRouter:
   override def routes: Routes = {
     todoRoute
   }
 
-  private val playServerOptions = PlayServerOptions.default(materializer, ec)
+  private val playServerOptions = PlayServerOptions.default
   private val interpreter = PlayServerInterpreter(playServerOptions)
 
   private val todoRoute = interpreter.toRoutes(todoEndpoints.endpoints)

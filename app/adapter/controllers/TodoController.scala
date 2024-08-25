@@ -16,7 +16,7 @@ class TodoController @Inject() (
     val controllerComponents: ControllerComponents,
     todoQueryService:         TodoQueryService,
     todoCommandService:       TodoCommandService
-)(implicit ec: ExecutionContext)
+)(using ExecutionContext)
     extends BaseController:
 
   def get(id: Long): Future[Either[writes.JsValueError, writes.JsValueTodo]] =
