@@ -7,5 +7,5 @@ object JsValueError:
   import play.api.libs.json.Json
   given Format[JsValueError] = Json.format[JsValueError]
 
-  def notFound(resource: String): JsValueError = JsValueError("NOT_FOUND", s"$resource not found")
-  def validationError(details: String): JsValueError = JsValueError("VALIDATION_ERROR", details)
+  def notFound(code: String, resource: String): JsValueError = JsValueError(code, s"$resource not found")
+  def validationError(code: String, details: String): JsValueError = JsValueError(code, details)
