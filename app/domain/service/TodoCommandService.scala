@@ -9,4 +9,4 @@ import scala.concurrent.Future
 class TodoCommandService @Inject() (todoRepository: TodoRepository):
   def add(todo: Todo): Future[Int] = todoRepository.add(todo)
   def update(todo: Todo): Future[Int] = todoRepository.update(todo)
-  def remove(todo: Todo): Future[Int] = todoRepository.remove(todo.id)
+  def delete(todo: Todo): Future[Int] = todoRepository.delete(todo.id)

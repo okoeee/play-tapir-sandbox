@@ -9,4 +9,4 @@ trait TodoRepository:
   def get(id: Long): Future[Option[Todo]]
   def add(todo: Todo): Future[Int]
   def update(todo: Todo): Future[Int]
-  def remove(id: Long): Future[Int]
+  def delete(id: Long): Future[Int]
