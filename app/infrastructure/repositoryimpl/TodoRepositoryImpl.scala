@@ -44,7 +44,7 @@ class TodoRepositoryImpl @Inject() (
           .update(todo)
       )
 
-  def remove(id: Long): Future[Int] =
+  def delete(id: Long): Future[Int] =
     db
       .run(
         todos

@@ -28,7 +28,21 @@ class Endpoints @Inject() (
       .errorOut(jsonBody[writes.JsValueError])
       .out(statusCode(StatusCode.NoContent))
 
+  private val updateTodoEndpoint: PublicEndpoint[(Long, reads.JsValueTodo), writes.JsValueError, Unit, Any] =
+    endpoint.put
+      .in("todo" / path[Long]("id"))
+      .in(jsonBody[reads.JsValueTodo])
+      .errorOut(jsonBody[writes.JsValueError])
+      .out(statusCode(StatusCode.NoContent))
+
+  private val deleteTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, Unit, Any] =
+    endpoint.delete
+      .in("todo" / path[Long]("id"))
+      .errorOut(jsonBody[writes.JsValueError])
+
   val endpoints: List[ServerEndpoint[Any, Future]] = List(
     findTodoEndpoint.serverLogic(id => todoController.get(id)),
-    createTodoEndpoint.serverLogic(jsValueTodo => todoController.create(jsValueTodo))
+    createTodoEndpoint.serverLogic(jsValueTodo => todoController.create(jsValueTodo)),
+    updateTodoEndpoint.serverLogic((id, jsValueTodo) => todoController.update(id, jsValueTodo)),
+    deleteTodoEndpoint.serverLogicSuccess(id => todoController.delete(id))
   )

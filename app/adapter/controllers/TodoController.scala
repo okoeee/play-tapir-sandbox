@@ -33,3 +33,13 @@ class TodoController @Inject() (
       case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.code, error.details)))
       case Right(todo) => todoCommandService.add(todo).map(_ => Right(()))
     }
+
+  def update(id: Long, jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
+    val todoEntity = jsValueTodo.toTodoEntityWithId(id)
+    todoEntity match {
+      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.code, error.details)))
+      case Right(todo) => todoCommandService.update(todo).map(_ => Right(()))
+    }
+
+  def delete(id: Long): Future[Unit] =
+    todoCommandService.delete(id)

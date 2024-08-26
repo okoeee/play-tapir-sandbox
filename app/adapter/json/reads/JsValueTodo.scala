@@ -16,6 +16,14 @@ case class JsValueTodo(
       isDone = this.isDone
     ).validate
 
+  def toTodoEntityWithId(id: Long): Either[ServiceError.ValidationFailed, Todo] =
+    Todo(
+      id = id,
+      title = this.title,
+      description = this.description,
+      isDone = this.isDone
+    ).validate
+
 object JsValueTodo:
   import play.api.libs.json.{Json, Reads, Format}
   given Format[JsValueTodo] = Json.format[JsValueTodo]
