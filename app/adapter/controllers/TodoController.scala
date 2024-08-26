@@ -1,7 +1,9 @@
 package adapter.controllers
 
-import adapter.json.writes.{JsValueError, JsValueTodo}
-import domain.service.TodoQueryService
+import adapter.json.writes
+import adapter.json.reads
+
+import domain.service.{TodoQueryService, TodoCommandService}
 
 import javax.inject.*
 import play.api.*
@@ -12,17 +14,32 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TodoController @Inject() (
     val controllerComponents: ControllerComponents,
-    todoQueryService:         TodoQueryService
-)(implicit ec: ExecutionContext)
+    todoQueryService:         TodoQueryService,
+    todoCommandService:       TodoCommandService
+)(using ExecutionContext)
     extends BaseController:
 
-  def get(id: Long): Future[Either[JsValueError, JsValueTodo]] =
+  def get(id: Long): Future[Either[writes.JsValueError, writes.JsValueTodo]] =
     for {
-      todo <- todoQueryService.get(id)
-    } yield {
-      todo
-        .map { todo =>
-          JsValueTodo(todo)
-        }
-        .toRight(JsValueError.notFound("Todo"))
+      todoResult <- todoQueryService.get(id)
+    } yield todoResult
+      .map(todo => writes.JsValueTodo(todo))
+      .left
+      .map(error => writes.JsValueError.notFound(code = error.code, resource = error.resource))
+
+  def create(jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
+    val todoEntity = jsValueTodo.toTodoEntity
+    todoEntity match {
+      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.code, error.details)))
+      case Right(todo) => todoCommandService.add(todo).map(_ => Right(()))
     }
+
+  def update(id: Long, jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
+    val todoEntity = jsValueTodo.toTodoEntityWithId(id)
+    todoEntity match {
+      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.code, error.details)))
+      case Right(todo) => todoCommandService.update(todo).map(_ => Right(()))
+    }
+
+  def delete(id: Long): Future[Unit] =
+    todoCommandService.delete(id)
