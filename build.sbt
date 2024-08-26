@@ -15,6 +15,8 @@ libraryDependencies ++= Seq(
   "com.softwaremill.sttp.tapir" %% "tapir-core" % tapirVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-play-server" % tapirVersion,
   "com.softwaremill.sttp.tapir" %% "tapir-json-play" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui" % tapirVersion,
   "org.playframework" %% "play-slick" % playSlickVersion,
   "org.playframework" %% "play-slick-evolutions" % playSlickVersion,
   "mysql" % "mysql-connector-java" % "8.0.33",
