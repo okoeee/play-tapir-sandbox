@@ -15,33 +15,50 @@ class Endpoints @Inject() (
     todoController: TodoController
 ):
 
-  private val baseEndpoint =
+  private val baseEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] =
     endpoint
       .in("api" / "todo")
+      .summary("""
+          |Todoの取得・追加・編集・削除を行うエンドポイント。
+          |""".stripMargin)
 
   private val findTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, writes.JsValueTodo, Any] =
     baseEndpoint.get
       .in(path[Long]("id"))
       .out(jsonBody[writes.JsValueTodo])
-      .errorOut(jsonBody[writes.JsValueError])
+      .errorOut(statusCode(StatusCode.NotFound).and(jsonBody[writes.JsValueError]))
+      .description("""
+          |idを用いてTodoの取得を行う。
+          |Todoが存在しない場合は404が返される。
+         |""".stripMargin)
 
   private val createTodoEndpoint: PublicEndpoint[reads.JsValueTodo, writes.JsValueError, Unit, Any] =
     baseEndpoint.post
       .in(jsonBody[reads.JsValueTodo])
-      .errorOut(jsonBody[writes.JsValueError])
+      .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueError]))
       .out(statusCode(StatusCode.NoContent))
+      .description("""
+          |Todoの作成を行う。
+          |バリデーションに失敗した場合は400が返される。
+          |""".stripMargin)
 
   private val updateTodoEndpoint: PublicEndpoint[(Long, reads.JsValueTodo), writes.JsValueError, Unit, Any] =
     baseEndpoint.put
       .in(path[Long]("id"))
       .in(jsonBody[reads.JsValueTodo])
-      .errorOut(jsonBody[writes.JsValueError])
+      .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueError]))
       .out(statusCode(StatusCode.NoContent))
+      .description("""
+          |Todoの更新を行う。
+          |バリデーションに失敗した場合は400が返される。
+          |""".stripMargin)
 
-  private val deleteTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, Unit, Any] =
+  private val deleteTodoEndpoint: PublicEndpoint[Long, Unit, Unit, Any] =
     baseEndpoint.delete
       .in(path[Long]("id"))
-      .errorOut(jsonBody[writes.JsValueError])
+      .description("""
+          |Todoの削除を行う。
+          |""".stripMargin)
 
   val endpoints: List[ServerEndpoint[Any, Future]] = List(
     findTodoEndpoint.serverLogic(id => todoController.get(id)),
