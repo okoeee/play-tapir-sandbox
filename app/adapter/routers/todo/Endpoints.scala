@@ -15,29 +15,32 @@ class Endpoints @Inject() (
     todoController: TodoController
 ):
 
+  private val baseEndpoint =
+    endpoint
+      .in("api" / "todo")
+
   private val findTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, writes.JsValueTodo, Any] =
-    endpoint.get
-      .in("todo" / path[Long]("id"))
+    baseEndpoint.get
+      .in(path[Long]("id"))
       .out(jsonBody[writes.JsValueTodo])
       .errorOut(jsonBody[writes.JsValueError])
 
   private val createTodoEndpoint: PublicEndpoint[reads.JsValueTodo, writes.JsValueError, Unit, Any] =
-    endpoint.post
-      .in("todo")
+    baseEndpoint.post
       .in(jsonBody[reads.JsValueTodo])
       .errorOut(jsonBody[writes.JsValueError])
       .out(statusCode(StatusCode.NoContent))
 
   private val updateTodoEndpoint: PublicEndpoint[(Long, reads.JsValueTodo), writes.JsValueError, Unit, Any] =
-    endpoint.put
-      .in("todo" / path[Long]("id"))
+    baseEndpoint.put
+      .in(path[Long]("id"))
       .in(jsonBody[reads.JsValueTodo])
       .errorOut(jsonBody[writes.JsValueError])
       .out(statusCode(StatusCode.NoContent))
 
   private val deleteTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, Unit, Any] =
-    endpoint.delete
-      .in("todo" / path[Long]("id"))
+    baseEndpoint.delete
+      .in(path[Long]("id"))
       .errorOut(jsonBody[writes.JsValueError])
 
   val endpoints: List[ServerEndpoint[Any, Future]] = List(
