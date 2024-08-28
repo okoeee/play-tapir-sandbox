@@ -25,19 +25,19 @@ class TodoController @Inject() (
     } yield todoResult
       .map(todo => writes.JsValueTodo(todo))
       .left
-      .map(error => writes.JsValueError.notFound(code = error.code, resource = error.resource))
+      .map(error => writes.JsValueError.notFound(resource = error.resource))
 
   def create(jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
     val todoEntity = jsValueTodo.toTodoEntity
     todoEntity match {
-      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.code, error.details)))
+      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.details)))
       case Right(todo) => todoCommandService.add(todo).map(_ => Right(()))
     }
 
   def update(id: Long, jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
     val todoEntity = jsValueTodo.toTodoEntityWithId(id)
     todoEntity match {
-      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.code, error.details)))
+      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.details)))
       case Right(todo) => todoCommandService.update(todo).map(_ => Right(()))
     }
 
