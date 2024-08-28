@@ -24,6 +24,7 @@ class Endpoints @Inject() (
       .in(path[Long]("id"))
       .out(jsonBody[writes.JsValueTodo])
       .errorOut(statusCode(StatusCode.NotFound).and(jsonBody[writes.JsValueError]))
+      .summary("Todoの取得")
       .description("""
           |idを用いてTodoの取得を行う。
           |Todoが存在しない場合は404が返される。
@@ -34,6 +35,7 @@ class Endpoints @Inject() (
       .in(jsonBody[reads.JsValueTodo])
       .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueError]))
       .out(statusCode(StatusCode.NoContent))
+      .summary("Todoの作成")
       .description("""
           |Todoの作成を行う。
           |バリデーションに失敗した場合は400が返される。
@@ -45,6 +47,7 @@ class Endpoints @Inject() (
       .in(jsonBody[reads.JsValueTodo])
       .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueError]))
       .out(statusCode(StatusCode.NoContent))
+      .summary("Todoの更新")
       .description("""
           |Todoの更新を行う。
           |バリデーションに失敗した場合は400が返される。
@@ -53,6 +56,7 @@ class Endpoints @Inject() (
   private val deleteTodoEndpoint: PublicEndpoint[Long, Unit, Unit, Any] =
     baseEndpoint.delete
       .in(path[Long]("id"))
+      .summary("Todoの削除")
       .description("""
           |Todoの削除を行う。
           |""".stripMargin)
