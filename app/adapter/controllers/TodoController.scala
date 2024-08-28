@@ -2,8 +2,8 @@ package adapter.controllers
 
 import adapter.json.writes
 import adapter.json.reads
-
-import domain.service.{TodoQueryService, TodoCommandService}
+import domain.model.Todo
+import domain.service.{TodoCommandService, TodoQueryService}
 
 import javax.inject.*
 import play.api.*

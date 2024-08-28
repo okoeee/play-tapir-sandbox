@@ -14,3 +14,30 @@ case class Todo(
 
   private def invalidTile: Boolean =
     this.title.isEmpty && this.title.length >= 40
+
+object Todo:
+
+  def applyWithId(
+      id: Long,
+      title: String,
+      description: String,
+      isDone: Boolean
+  ): Either[ServiceError.ValidationFailed, Todo] =
+    Todo(
+      id = id,
+      title = title,
+      description = description,
+      isDone = isDone
+    ).validate
+
+  def applyForCreate(
+      title: String,
+      description: String,
+      isDone: Boolean
+  ): Either[ServiceError.ValidationFailed, Todo] =
+    Todo(
+      id = 0,
+      title = title,
+      description = description,
+      isDone = isDone
+    ).validate

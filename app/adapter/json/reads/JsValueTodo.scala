@@ -9,20 +9,19 @@ case class JsValueTodo(
     isDone:      Boolean
 ):
   def toTodoEntity: Either[ServiceError.ValidationFailed, Todo] =
-    Todo(
-      id = 0,
-      title = this.title,
-      description = this.description,
-      isDone = this.isDone
-    ).validate
+    Todo.applyForCreate(
+      title,
+      description,
+      isDone
+    )
 
   def toTodoEntityWithId(id: Long): Either[ServiceError.ValidationFailed, Todo] =
-    Todo(
-      id = id,
-      title = this.title,
-      description = this.description,
-      isDone = this.isDone
-    ).validate
+    Todo.applyWithId(
+      id,
+      title,
+      description,
+      isDone
+    )
 
 object JsValueTodo:
   import play.api.libs.json.{Json, Reads, Format}
