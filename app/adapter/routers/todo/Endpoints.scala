@@ -18,6 +18,7 @@ class Endpoints @Inject() (
   private val baseEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] =
     endpoint
       .in("api" / "todo")
+      .tag("Todo")
 
   private val findTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, writes.JsValueTodo, Any] =
     baseEndpoint.get
