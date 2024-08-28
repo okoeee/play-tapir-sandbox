@@ -24,5 +24,5 @@ case class JsValueTodo(
     )
 
 object JsValueTodo:
-  import play.api.libs.json.{Json, Reads, Format}
+  import play.api.libs.json.{Json, Format}
   given Format[JsValueTodo] = Json.format[JsValueTodo]
