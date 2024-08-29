@@ -19,25 +19,25 @@ class TodoController @Inject() (
 )(using ExecutionContext)
     extends BaseController:
 
-  def get(id: Long): Future[Either[writes.JsValueError, writes.JsValueTodo]] =
+  def get(id: Long): Future[Either[writes.JsValueNotFound, writes.JsValueTodo]] =
     for {
       todoResult <- todoQueryService.get(id)
     } yield todoResult
       .map(todo => writes.JsValueTodo(todo))
       .left
-      .map(error => writes.JsValueError.notFound(resource = error.resource))
+      .map(error => writes.JsValueNotFound(message = error.resource))
 
-  def create(jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
+  def create(jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueValidationError, Unit]] =
     val todoEntity = jsValueTodo.toTodoEntity
     todoEntity match {
-      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.details)))
+      case Left(error) => Future.successful(Left(writes.JsValueValidationError(error.details)))
       case Right(todo) => todoCommandService.add(todo).map(_ => Right(()))
     }
 
-  def update(id: Long, jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueError, Unit]] =
+  def update(id: Long, jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueValidationError, Unit]] =
     val todoEntity = jsValueTodo.toTodoEntityWithId(id)
     todoEntity match {
-      case Left(error) => Future.successful(Left(writes.JsValueError.validationError(error.details)))
+      case Left(error) => Future.successful(Left(writes.JsValueValidationError(error.details)))
       case Right(todo) => todoCommandService.update(todo).map(_ => Right(()))
     }
 
