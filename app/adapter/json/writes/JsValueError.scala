@@ -1,11 +1,17 @@
 package adapter.json.writes
 
-import play.api.libs.json.Format
+import play.api.libs.json.{Format, Json}
 
-case class JsValueError(code: String, message: String)
-object JsValueError:
-  import play.api.libs.json.Json
-  given Format[JsValueError] = Json.format[JsValueError]
+sealed abstract class JsValueError(val message: String)
 
-  def notFound(code: String, resource: String): JsValueError = JsValueError(code, s"$resource not found")
-  def validationError(code: String, details: String): JsValueError = JsValueError(code, details)
+case class JsValueNotFound(override val message: String) extends JsValueError(message)
+object JsValueNotFound:
+  given Format[JsValueNotFound] = Json.format[JsValueNotFound]
+
+case class JsValueBadRequest(override val message: String) extends JsValueError(message)
+object JsValueBadRequest:
+  given Format[JsValueBadRequest] = Json.format[JsValueBadRequest]
+
+case class JsValueValidationError(override val message: String) extends JsValueError(message)
+object JsValueValidationError:
+  given Format[JsValueValidationError] = Json.format[JsValueValidationError]

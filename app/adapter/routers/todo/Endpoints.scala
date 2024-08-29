@@ -20,21 +20,21 @@ class Endpoints @Inject() (
       .in("api" / "todo")
       .tag("Todo")
 
-  private val findTodoEndpoint: PublicEndpoint[Long, writes.JsValueError, writes.JsValueTodo, Any] =
+  private val findTodoEndpoint: PublicEndpoint[Long, writes.JsValueNotFound, writes.JsValueTodo, Any] =
     baseEndpoint.get
       .in(path[Long]("id"))
       .out(jsonBody[writes.JsValueTodo])
-      .errorOut(statusCode(StatusCode.NotFound).and(jsonBody[writes.JsValueError]))
+      .errorOut(statusCode(StatusCode.NotFound).and(jsonBody[writes.JsValueNotFound]))
       .summary("Todoの取得")
       .description("""
           |idを用いてTodoの取得を行う。
           |Todoが存在しない場合は404が返される。
          |""".stripMargin)
 
-  private val createTodoEndpoint: PublicEndpoint[reads.JsValueTodo, writes.JsValueError, Unit, Any] =
+  private val createTodoEndpoint: PublicEndpoint[reads.JsValueTodo, writes.JsValueValidationError, Unit, Any] =
     baseEndpoint.post
       .in(jsonBody[reads.JsValueTodo])
-      .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueError]))
+      .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueValidationError]))
       .out(statusCode(StatusCode.NoContent))
       .summary("Todoの作成")
       .description("""
@@ -42,11 +42,11 @@ class Endpoints @Inject() (
           |バリデーションに失敗した場合は400が返される。
           |""".stripMargin)
 
-  private val updateTodoEndpoint: PublicEndpoint[(Long, reads.JsValueTodo), writes.JsValueError, Unit, Any] =
+  private val updateTodoEndpoint: PublicEndpoint[(Long, reads.JsValueTodo), writes.JsValueValidationError, Unit, Any] =
     baseEndpoint.put
       .in(path[Long]("id"))
       .in(jsonBody[reads.JsValueTodo])
-      .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueError]))
+      .errorOut(statusCode(StatusCode.BadRequest).and(jsonBody[writes.JsValueValidationError]))
       .out(statusCode(StatusCode.NoContent))
       .summary("Todoの更新")
       .description("""
