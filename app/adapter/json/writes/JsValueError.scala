@@ -1,6 +1,7 @@
 package adapter.json.writes
 
 import play.api.libs.json.{Format, Json}
+import sttp.tapir.Schema
 
 sealed abstract class JsValueError(val message: String)
 
@@ -11,6 +12,7 @@ object JsValueNotFound:
 case class JsValueBadRequest(override val message: String) extends JsValueError(message)
 object JsValueBadRequest:
   given Format[JsValueBadRequest] = Json.format[JsValueBadRequest]
+  given Schema[JsValueBadRequest] = Schema.derived
 
 case class JsValueValidationError(override val message: String) extends JsValueError(message)
 object JsValueValidationError:
