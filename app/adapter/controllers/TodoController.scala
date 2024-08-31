@@ -26,6 +26,7 @@ class TodoController @Inject() (
       .map(todo => writes.JsValueTodo(todo))
       .left
       .map(error => writes.JsValueNotFound(message = error.resource))
+      .map(throw Exception("Server Error"))
 
   def create(jsValueTodo: reads.JsValueTodo): Future[Either[writes.JsValueValidationError, Unit]] =
     val todoEntity = jsValueTodo.toTodoEntity

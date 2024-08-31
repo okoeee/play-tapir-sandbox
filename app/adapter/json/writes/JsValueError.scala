@@ -14,6 +14,11 @@ object JsValueBadRequest:
   given Format[JsValueBadRequest] = Json.format[JsValueBadRequest]
   given Schema[JsValueBadRequest] = Schema.derived
 
+case class JsValueInternalServerError(override val message: String) extends JsValueError(message)
+object JsValueInternalServerError:
+  given Format[JsValueInternalServerError] = Json.format[JsValueInternalServerError]
+  given Schema[JsValueInternalServerError] = Schema.derived
+
 case class JsValueValidationError(override val message: String) extends JsValueError(message)
 object JsValueValidationError:
   given Format[JsValueValidationError] = Json.format[JsValueValidationError]

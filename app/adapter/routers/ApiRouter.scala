@@ -1,12 +1,13 @@
 package adapter.routers
 
-import adapter.json.writes.JsValueBadRequest
+import adapter.json.writes.JsValueInternalServerError
 import adapter.routers.todo.Endpoints
 import org.apache.pekko.stream.Materializer
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 import sttp.tapir.json.play.jsonBody
 import sttp.tapir.server.interceptor.decodefailure.DecodeFailureHandler
+import sttp.tapir.server.interceptor.exception.ExceptionHandler
 import sttp.tapir.server.model.ValuedEndpointOutput
 import sttp.tapir.server.play.{PlayServerInterpreter, PlayServerOptions}
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
@@ -25,20 +26,16 @@ class ApiRouter @Inject() (
       .orElse(todoRoute)
   }
 
+  private val exceptionHandler: ExceptionHandler[Future] =
+    ExceptionHandler.pure[Future] { ctx =>
+      Some(
+        ValuedEndpointOutput[JsValueInternalServerError](jsonBody[JsValueInternalServerError], JsValueInternalServerError(s"Internal Server Error: ${ctx.e}"))
+      )
+    }
+
   private val commonPlayServerOption: PlayServerOptions = PlayServerOptions
-    .customiseInterceptors(
-      PlayServerOptions.defaultParserConfiguration
-    )
-    .decodeFailureHandler(
-      DecodeFailureHandler[Future] { ctx =>
-        println(s"Decode failed: ${ctx.failure}")
-        Future.successful(
-          Some(
-            ValuedEndpointOutput[JsValueBadRequest](jsonBody[JsValueBadRequest], JsValueBadRequest("bad req"))
-          )
-        )
-      }
-    )
+    .customiseInterceptors()
+    .exceptionHandler(exceptionHandler)
     .options
 
   private val playServerOptions = PlayServerOptions.default
