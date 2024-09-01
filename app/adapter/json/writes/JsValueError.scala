@@ -5,6 +5,11 @@ import sttp.tapir.Schema
 
 sealed abstract class JsValueError(val message: String)
 
+case class JsValueAuthorizationFailed(override val message: String) extends JsValueError(message)
+object JsValueAuthorizationFailed:
+  given Format[JsValueAuthorizationFailed] = Json.format[JsValueAuthorizationFailed]
+  given Schema[JsValueAuthorizationFailed] = Schema.derived
+
 case class JsValueNotFound(override val message: String) extends JsValueError(message)
 object JsValueNotFound:
   given Format[JsValueNotFound] = Json.format[JsValueNotFound]
