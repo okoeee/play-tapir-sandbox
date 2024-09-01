@@ -26,4 +26,4 @@ class SecureEndpoints @Inject() (
 
   val authorizationWithBearerEndpoint: PartialServerEndpoint[String, UserContext, Unit, JsValueError, Unit, Any, Future] =
     secureEndpointWithBearer
-      .serverSecurityLogic(bearer => authorizationController.authorizationWithBearer(bearer))
+      .serverSecurityLogic(authorizationController.authorizationWithBearer)
