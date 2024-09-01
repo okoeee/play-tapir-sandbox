@@ -6,7 +6,6 @@ import org.apache.pekko.stream.Materializer
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 import sttp.tapir.json.play.jsonBody
-import sttp.tapir.server.interceptor.decodefailure.DecodeFailureHandler
 import sttp.tapir.server.interceptor.exception.ExceptionHandler
 import sttp.tapir.server.model.ValuedEndpointOutput
 import sttp.tapir.server.play.{PlayServerInterpreter, PlayServerOptions}
