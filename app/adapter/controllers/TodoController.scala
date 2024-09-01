@@ -2,6 +2,7 @@ package adapter.controllers
 
 import adapter.json.writes
 import adapter.json.reads
+import adapter.json.writes.JsValueBadRequest
 import domain.model.Todo
 import domain.service.{TodoCommandService, TodoQueryService}
 
@@ -40,5 +41,8 @@ class TodoController @Inject() (
       case Right(todo) => todoCommandService.update(todo).map(_ => Right(()))
     }
 
-  def delete(id: Long): Future[Unit] =
-    todoCommandService.delete(id)
+  def delete(id: Long): Future[Either[JsValueBadRequest, Unit]] =
+    for result <- todoCommandService.delete(id)
+    yield
+      if (result == 1) Right(())
+      else Left(JsValueBadRequest("Target not found"))

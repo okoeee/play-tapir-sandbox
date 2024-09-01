@@ -11,4 +11,4 @@ class TodoCommandService @Inject() (
 )(using ExecutionContext):
   def add(todo: Todo): Future[Int] = todoRepository.add(todo)
   def update(todo: Todo): Future[Int] = todoRepository.update(todo)
-  def delete(id: Long): Future[Unit] = todoRepository.delete(id).map(_ => ())
+  def delete(id: Long): Future[Int] = todoRepository.delete(id)
