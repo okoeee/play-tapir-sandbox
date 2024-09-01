@@ -20,9 +20,8 @@ class TodoController @Inject() (
     extends BaseController:
 
   def get(id: Long): Future[Either[writes.JsValueNotFound, writes.JsValueTodo]] =
-    for {
-      todoResult <- todoQueryService.get(id)
-    } yield todoResult
+    for todoResult <- todoQueryService.get(id)
+    yield todoResult
       .map(todo => writes.JsValueTodo(todo))
       .left
       .map(error => writes.JsValueNotFound(message = error.resource))
