@@ -8,6 +8,7 @@ sealed abstract class JsValueError(val message: String)
 case class JsValueNotFound(override val message: String) extends JsValueError(message)
 object JsValueNotFound:
   given Format[JsValueNotFound] = Json.format[JsValueNotFound]
+  given Schema[JsValueNotFound] = Schema.derived
 
 case class JsValueBadRequest(override val message: String) extends JsValueError(message)
 object JsValueBadRequest:
@@ -22,3 +23,4 @@ object JsValueInternalServerError:
 case class JsValueValidationError(override val message: String) extends JsValueError(message)
 object JsValueValidationError:
   given Format[JsValueValidationError] = Json.format[JsValueValidationError]
+  given Schema[JsValueInternalServerError] = Schema.derived
