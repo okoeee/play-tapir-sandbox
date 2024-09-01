@@ -1,7 +1,9 @@
 package adapter.routers.todo
 
-import adapter.controllers.TodoController
+import adapter.context.UserContext
+import adapter.controllers.{AuthorizationController, TodoController}
 import adapter.json.{reads, writes}
+import adapter.routers.security.SecureEndpoints
 import sttp.model.StatusCode
 import sttp.tapir.*
 import sttp.tapir.generic.auto.*
@@ -12,7 +14,9 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class Endpoints @Inject() (
-    todoController: TodoController
+    secureEndpoint:          SecureEndpoints,
+    authorizationController: AuthorizationController,
+    todoController:          TodoController
 ):
 
   private val baseEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] =
@@ -20,11 +24,14 @@ class Endpoints @Inject() (
       .in("api" / "todo")
       .tag("Todo")
 
-  private val findTodoEndpoint: PublicEndpoint[Long, writes.JsValueNotFound, writes.JsValueTodo, Any] =
-    baseEndpoint.get
+  private val findTodoEndpoint =
+    secureEndpoint.authorizationWithBearerEndpoint.get
+      .in("api" / "todo")
       .in(path[Long]("id"))
       .out(jsonBody[writes.JsValueTodo])
-      .errorOut(statusCode(StatusCode.NotFound).and(jsonBody[writes.JsValueNotFound]))
+      .errorOutVariantPrepend(
+        oneOfVariant(statusCode(StatusCode.NotFound).and(jsonBody[writes.JsValueNotFound]))
+      )
       .summary("Todoの取得")
       .description("""
           |idを用いてTodoの取得を行う。
@@ -63,7 +70,8 @@ class Endpoints @Inject() (
           |""".stripMargin)
 
   val endpoints: List[ServerEndpoint[Any, Future]] = List(
-    findTodoEndpoint.serverLogic(id => todoController.get(id)),
+    findTodoEndpoint
+      .serverLogic((context: UserContext) => (id: Long) => todoController.get(id)),
     createTodoEndpoint.serverLogic(jsValueTodo => todoController.create(jsValueTodo)),
     updateTodoEndpoint.serverLogic((id, jsValueTodo) => todoController.update(id, jsValueTodo)),
     deleteTodoEndpoint.serverLogicSuccess(id => todoController.delete(id))
