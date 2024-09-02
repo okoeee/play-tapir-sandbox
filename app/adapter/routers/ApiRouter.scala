@@ -37,7 +37,6 @@ class ApiRouter @Inject() (
     .exceptionHandler(exceptionHandler)
     .options
 
-  private val playServerOptions = PlayServerOptions.default
   private val interpreter = PlayServerInterpreter(commonPlayServerOption)
 
   private val todoRoute = interpreter.toRoutes(todoEndpoints.endpoints)
