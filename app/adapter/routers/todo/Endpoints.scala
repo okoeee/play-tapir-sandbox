@@ -9,7 +9,7 @@ import sttp.model.StatusCode
 import sttp.tapir.*
 import sttp.tapir.generic.auto.*
 import sttp.tapir.json.play.*
-import sttp.tapir.server.{PartialServerEndpoint, ServerEndpoint}
+import sttp.tapir.server.ServerEndpoint
 
 import javax.inject.Inject
 import scala.concurrent.Future
