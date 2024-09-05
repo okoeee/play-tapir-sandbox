@@ -2,7 +2,7 @@ package adapter.routers.security
 
 import adapter.context.UserContext
 import adapter.controllers.AuthorizationController
-import adapter.json.writes.{JsValueAuthorizationFailed, JsValueError}
+import adapter.json.writes.{JsValueAuthorizationFailed, JsValueError, JsValueInternalServerError}
 import sttp.model.StatusCode
 import sttp.tapir.*
 import sttp.tapir.json.play.jsonBody
@@ -20,7 +20,8 @@ class SecureEndpoints @Inject() (
       .securityIn(auth.bearer[String]())
       .errorOut(
         oneOf[JsValueError](
-          oneOfVariant(statusCode(StatusCode.Forbidden).and(jsonBody[JsValueAuthorizationFailed]))
+          oneOfVariant(statusCode(StatusCode.Forbidden).and(jsonBody[JsValueAuthorizationFailed])),
+          oneOfVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[JsValueInternalServerError]))
         )
       )
 
