@@ -20,10 +20,12 @@ class ApiRouter @Inject() (
     Materializer,
     ExecutionContext
 ) extends SimpleRouter:
-  override def routes: Routes = {
-    swaggerRoute
-      .orElse(todoRoute)
-  }
+  override def routes: Routes =
+    interpreter
+      .toRoutes(
+        swaggerEndpoints
+          ++ todoEndpoints.endpoints
+      )
 
   private val exceptionHandler: ExceptionHandler[Future] =
     ExceptionHandler.pure[Future] { ctx =>
@@ -39,7 +41,4 @@ class ApiRouter @Inject() (
 
   private val interpreter = PlayServerInterpreter(commonPlayServerOption)
 
-  private val todoRoute = interpreter.toRoutes(todoEndpoints.endpoints)
-
   private val swaggerEndpoints = SwaggerInterpreter().fromServerEndpoints[Future](todoEndpoints.endpoints, "play-tapir-sandbox", "1.0")
-  private val swaggerRoute = interpreter.toRoutes(swaggerEndpoints)
