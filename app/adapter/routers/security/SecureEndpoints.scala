@@ -21,7 +21,7 @@ class SecureEndpoints @Inject() (
       .errorOut(
         oneOf[JsValueError](
           oneOfVariant(statusCode(StatusCode.Forbidden).and(jsonBody[JsValueAuthorizationFailed])),
-          oneOfVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[JsValueInternalServerError]))
+          oneOfDefaultVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[JsValueInternalServerError]))
         )
       )
 
