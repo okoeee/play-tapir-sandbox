@@ -1,8 +1,8 @@
 package adapter.routers.security
 
 import adapter.context.UserContext
-import adapter.controllers.AuthorizationController
-import adapter.json.writes.{JsValueAuthorizationFailed, JsValueError, JsValueInternalServerError}
+import adapter.controllers.AuthenticationController
+import adapter.json.writes.{JsValueAuthenticationFailed, JsValueError, JsValueInternalServerError}
 import sttp.model.StatusCode
 import sttp.tapir.*
 import sttp.tapir.json.play.jsonBody
@@ -12,7 +12,7 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class SecureEndpoints @Inject() (
-    authorizationController: AuthorizationController
+    authenticationController: AuthenticationController
 ):
 
   private val secureEndpointWithBearer: Endpoint[String, Unit, JsValueError, Unit, Any] =
@@ -20,11 +20,11 @@ class SecureEndpoints @Inject() (
       .securityIn(auth.bearer[String]())
       .errorOut(
         oneOf[JsValueError](
-          oneOfVariant(statusCode(StatusCode.Unauthorized).and(jsonBody[JsValueAuthorizationFailed])),
+          oneOfVariant(statusCode(StatusCode.Unauthorized).and(jsonBody[JsValueAuthenticationFailed])),
           oneOfDefaultVariant(statusCode(StatusCode.InternalServerError).and(jsonBody[JsValueInternalServerError]))
         )
       )
 
-  val authorizationWithBearerEndpoint: PartialServerEndpoint[String, UserContext, Unit, JsValueError, Unit, Any, Future] =
+  val authenticationWithBearerEndpoint: PartialServerEndpoint[String, UserContext, Unit, JsValueError, Unit, Any, Future] =
     secureEndpointWithBearer
-      .serverSecurityLogic(authorizationController.authorizationWithBearer)
+      .serverSecurityLogic(authenticationController.authenticateWithBearer)

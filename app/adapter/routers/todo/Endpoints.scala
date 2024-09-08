@@ -1,7 +1,7 @@
 package adapter.routers.todo
 
 import adapter.context.UserContext
-import adapter.controllers.{AuthorizationController, TodoController}
+import adapter.controllers.{AuthenticationController, TodoController}
 import adapter.json.writes.JsValueError
 import adapter.json.{reads, writes}
 import adapter.routers.security.{SecureEndpoints, SecureEndpointsType}
@@ -15,13 +15,13 @@ import javax.inject.Inject
 import scala.concurrent.Future
 
 class Endpoints @Inject() (
-    secureEndpoint:          SecureEndpoints,
-    authorizationController: AuthorizationController,
-    todoController:          TodoController
+    secureEndpoint:           SecureEndpoints,
+    authenticationController: AuthenticationController,
+    todoController:           TodoController
 ):
 
   private val baseEndpoint: SecureEndpointsType.SecureEndpoint[Unit, writes.JsValueError, Unit] =
-    secureEndpoint.authorizationWithBearerEndpoint
+    secureEndpoint.authenticationWithBearerEndpoint
       .in("api" / "todo")
       .tag("Todo")
 
