@@ -11,5 +11,5 @@ class AuthenticationController @Inject() ():
   def authenticateWithBearer(bearer: String): Future[Either[JsValueAuthenticationFailed, UserContext]] =
     Future.successful {
       if (bearer == "hoge") Right(UserContext(1, "John"))
-      else Left(JsValueAuthenticationFailed("Unauthorized"))
+      else Left(JsValueAuthenticationFailed("Authentication Failed"))
     }
