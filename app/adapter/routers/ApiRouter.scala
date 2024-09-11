@@ -5,6 +5,7 @@ import adapter.routers.todo.Endpoints
 import org.apache.pekko.stream.Materializer
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
+import sttp.tapir.*
 import sttp.tapir.json.play.jsonBody
 import sttp.tapir.server.interceptor.exception.ExceptionHandler
 import sttp.tapir.server.model.ValuedEndpointOutput
@@ -20,12 +21,15 @@ class ApiRouter @Inject() (
     Materializer,
     ExecutionContext
 ) extends SimpleRouter:
+
+  private val endpoints = todoEndpoints.endpoints.map(
+    _.prependSecurityIn(List("api").foldLeft(emptyInput: EndpointInput[Unit])(_ / _))
+  )
+
+  private val swaggerEndpoints = SwaggerInterpreter().fromServerEndpoints[Future](endpoints, "play-tapir-sandbox", "1.0")
+
   override def routes: Routes =
-    interpreter
-      .toRoutes(
-        swaggerEndpoints
-          ++ todoEndpoints.endpoints
-      )
+    interpreter.toRoutes(swaggerEndpoints ++ endpoints)
 
   private val exceptionHandler: ExceptionHandler[Future] =
     ExceptionHandler.pure[Future] { ctx =>
@@ -40,5 +44,3 @@ class ApiRouter @Inject() (
     .options
 
   private val interpreter = PlayServerInterpreter(commonPlayServerOption)
-
-  private val swaggerEndpoints = SwaggerInterpreter().fromServerEndpoints[Future](todoEndpoints.endpoints, "play-tapir-sandbox", "1.0")

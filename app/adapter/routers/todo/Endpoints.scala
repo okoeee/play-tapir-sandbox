@@ -22,7 +22,7 @@ class Endpoints @Inject() (
 
   private val baseEndpoint: SecureEndpointsType.SecureEndpoint[Unit, writes.JsValueError, Unit] =
     secureEndpoint.authenticationWithBearerEndpoint
-      .in("api" / "todo")
+      .in("todo")
       .tag("Todo")
 
   private val findTodoEndpoint: SecureEndpointsType.SecureEndpoint[Long, writes.JsValueError, writes.JsValueTodo] =
